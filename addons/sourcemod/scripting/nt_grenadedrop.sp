@@ -40,7 +40,7 @@ public void OnClientPutInServer(int client)
 public void OnWeaponDrop(int client, int weapon)
 {
     if(!GameRules_GetProp("m_bFreezePeriod"))
-			return Plugin_Continue;
+	return Plugin_Continue;
             
     if(!IsValidEdict(weapon))
 		return;
