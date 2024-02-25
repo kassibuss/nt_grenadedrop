@@ -1,59 +1,45 @@
 #include <sourcemod>
-#include <sdktools>
-#include <dhooks>
-
 #include <neotokyo>
+#include <sdkhooks>
 
-#pragma semicolon 1
-#pragma newdecls required
-
-#define AMMO_GRENADE	1 // Not sure if defining is needed, remove unless necessary?
-#define AMMO_SMOKE		2
+#define Attack_Two (1 << 11) 
 
 public Plugin myinfo =
 {
-    name = "Neotokyo Grenade Drop",
-    author = "kinoko",
-    description = "Enables dropping grenades during the freeze time of the round",
-    version = PLUGIN_VERSION,
-    url = ""
-};  
+    name = "NT Drop nade",
+    author = "Kinoko, bauxite",
+    description = "Drop a nade",
+    version    = "0.1.0",
+    url    = ""
+};
 
-public void OnPluginStart()
+public Action OnPlayerRunCmd(int client, int &buttons)
 {
-    hEnabled = CreateConvar("sm_grenadedrop", "0", ADMFLAG_GENERIC, "Enables dropping grenades.");
-    HookConVarChange(hEnabled, toggle_plugin)
-    HookEvent("game_round_start", event_RoundStart);
-}
-
-public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
-{
-    if SetConVarInt(hEnabled, 1);
+    if(!IsPlayerAlive(client))
+    {
         return Plugin_Continue;
-}
-
-public void OnClientPutInServer(int client)
-{
-	SDKHook(client, SDKHook_DropWeapon, OnWeaponDrop);
-}
-
-public void OnWeaponDrop(int client, int weapon)
-{
-    if(!GameRules_GetProp("m_bFreezePeriod"))
-	return Plugin_Continue;
-            
-    if(!IsValidEdict(weapon))
-		return;
-
-	char classname[32];
-	if(!GetEntityClassname(weapon, classname, sizeof(classname)))
-		return; 
-
-	if(!StrEqual(classname, "weapon_grenade"))
-		return;
+    }
     
-    else if(!StrEqual(classname, "weapon_smokegrenade"))
-		return;
+    if(buttons & Attack_Two)
+    {
+        int activeweapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon");
+            
+        if(activeweapon <= 0)
+        {
+            return Plugin_Continue;
+        }
+            
+        char classname[32];
+            
+        GetEntityClassname(activeweapon, classname, 32);
+            
+        if(StrContains(classname, "grenade", false) == -1)
+        {
+            return Plugin_Continue;
+        }
         
-	g_fLastWeaponDroppedTime[client] = GetGameTime();
+        SDKHooks_DropWeapon(client, activeweapon, NULL_VECTOR, NULL_VECTOR, true);    
+    }
+    
+    return Plugin_Continue;
 }
