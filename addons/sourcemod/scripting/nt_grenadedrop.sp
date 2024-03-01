@@ -9,7 +9,7 @@ public Plugin myinfo =
     name = "NT Drop nade",
     author = "Kinoko, bauxite",
     description = "Drop a nade",
-    version    = "0.1.0",
+    version    = "0.1.1",
     url    = ""
 };
 
@@ -32,13 +32,11 @@ public Action OnPlayerRunCmd(int client, int &buttons)
         char classname[32];
             
         GetEntityClassname(activeweapon, classname, 32);
-            
-        if(StrContains(classname, "grenade", false) == -1)
+		
+        if(!(StrContains(classname, "grenade", false) == -1) || !(StrContains(classname, "weapon_remotedet", false) == -1))
         {
-            return Plugin_Continue;
+            SDKHooks_DropWeapon(client, activeweapon, NULL_VECTOR, NULL_VECTOR, true);  
         }
-        
-        SDKHooks_DropWeapon(client, activeweapon, NULL_VECTOR, NULL_VECTOR, true);    
     }
     
     return Plugin_Continue;
