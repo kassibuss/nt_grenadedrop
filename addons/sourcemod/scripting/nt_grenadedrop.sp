@@ -33,7 +33,7 @@ public Action OnPlayerRunCmd(int client, int &buttons)
             
         GetEntityClassname(activeweapon, classname, 32);
             
-        if(StrContains(classname, "weapon_grenade", false) == -1)
+        if(StrContains(classname, "grenade", false) == -1 || StrContains(classname, "weapon_remotedet", false) == -1)
         {
             return Plugin_Continue;
         }
