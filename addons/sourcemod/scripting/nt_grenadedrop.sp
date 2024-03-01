@@ -9,7 +9,7 @@ public Plugin myinfo =
     name = "NT Drop nade",
     author = "Kinoko, bauxite",
     description = "Drop a nade",
-    version    = "0.1.0",
+    version    = "0.1.1",
     url    = ""
 };
 
@@ -33,7 +33,7 @@ public Action OnPlayerRunCmd(int client, int &buttons)
             
         GetEntityClassname(activeweapon, classname, 32);
             
-        if(StrContains(classname, "grenade", false) == -1)
+        if(StrContains(classname, "weapon_grenade", false) == -1)
         {
             return Plugin_Continue;
         }
